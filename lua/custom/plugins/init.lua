@@ -52,4 +52,81 @@ return {
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim' },
   },
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-neotest/neotest-go',
+    },
+    config = function()
+      local neotest = require 'neotest'
+
+      neotest.setup {
+        adapters = {
+          require 'neotest-go',
+        },
+        output_panel = {
+          enabled = true,
+          open = 'botright split | resize 15',
+        },
+        quickfix = {
+          open = false,
+        },
+      }
+
+      -- Keymaps
+      vim.keymap.set('n', '<leader>tt', function()
+        neotest.run.run(vim.fn.expand '%')
+      end, { desc = 'Run tests in file' })
+
+      vim.keymap.set('n', '<leader>tr', function()
+        neotest.run.run()
+      end, { desc = 'Run nearest test' })
+
+      vim.keymap.set('n', '<leader>ts', function()
+        neotest.summary.toggle()
+      end, { desc = 'Toggle test summary' })
+
+      vim.keymap.set('n', '<leader>to', function()
+        neotest.output.open { enter = true, auto_close = true }
+      end, { desc = 'Show test output' })
+
+      vim.keymap.set('n', '<leader>tO', function()
+        neotest.output_panel.toggle()
+      end, { desc = 'Toggle test output panel' })
+    end,
+  },
+  {
+    'github/copilot.vim',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+  },
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    config = function()
+      local harpoon = require 'harpoon'
+      harpoon:setup()
+
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon:list():add()
+      end)
+      vim.keymap.set('n', '<C-e>', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end)
+      vim.keymap.set('n', '<C-j>', function()
+        harpoon:list():select(1)
+      end)
+      vim.keymap.set('n', '<C-k>', function()
+        harpoon:list():select(2)
+      end)
+      vim.keymap.set('n', '<C-l>', function()
+        harpoon:list():select(3)
+      end)
+      vim.keymap.set('n', '<C-;>', function()
+        harpoon:list():select(4)
+      end)
+    end,
+  },
 }
